@@ -1,14 +1,22 @@
 import { Avatar } from "@material-ui/core"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { useEffect, useRef } from "react"
+import { Delete } from "@material-ui/icons"
+import { deleteMessageAsync, getAllMessages } from "../../../features/ChatStore"
 
 const ChatMessages = () => {
-  const { messages } = useSelector(({ chat }) => chat)
-  const { user } = useSelector(({ auth }) => auth)
-
+  const dispatch = useDispatch()
+  const { messages, chatId } = useSelector(({ chat }) => chat)
+  const { user, secret } = useSelector(({ auth }) => auth)
   const messagesEndRef = useRef(null)
+
+  const deleteMessage = (id) => {
+    dispatch(deleteMessageAsync({ chatId, secret, messageId: id }))
+    const res = messages.filter(res => res.id !== id)
+    dispatch(getAllMessages(res))
+  }
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
@@ -40,7 +48,7 @@ const ChatMessages = () => {
                     borderRadius: "20px",
                     padding: "10px",
                   }}
-                >{message.text}</p>
+                >{message.sender_username === user.username && <Delete className="deleteBtn" onClick={() => deleteMessage(message.id)} />}{message.text}</p>
               </Convo>
             </MessagesContainer>
           })
@@ -90,6 +98,11 @@ const MessagesContainer = styled.div`
     h3 {
       font-size: 0.9rem;
     }
+  }
+
+  .deleteBtn {
+    font-size: 0.8rem;
+    cursor: pointer;
   }
 `
 

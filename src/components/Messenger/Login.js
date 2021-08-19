@@ -4,11 +4,13 @@ import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
 import { loginAsync, resetState } from "../../features/AuthStore"
 import { userAsync } from "../../features/UsersStore"
+import { chatMessagesAsync } from "../../features/ChatStore"
 
-const Login = (props) => {
+const Login = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const { isAuth, user, errors } = useSelector(({ auth }) => auth);
+  const { isAuth, user, errors, secret } = useSelector(({ auth }) => auth);
+  const { chatId } = useSelector(({ chat }) => chat);
 
   const [loginUser, setLoginUser] = useState({
     username: '',
@@ -40,9 +42,12 @@ const Login = (props) => {
     if (user !== null) {
       dispatch(userAsync())
       console.log("Successfully login")
-      history.push('/messages')
+      if (chatId !== null) {
+        dispatch(chatMessagesAsync({ id: chatId, secret }))
+        history.push(`/messages/${chatId}`)
+      }
     }
-  }, [user, errors, history, isAuth, dispatch])
+  }, [user, errors, history, isAuth, dispatch, chatId, secret])
 
   return (
     <FormContainer>

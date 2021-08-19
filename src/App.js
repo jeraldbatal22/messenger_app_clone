@@ -54,7 +54,7 @@ function App() {
           {
             isAuth ?
               <AppBody>
-                <Route path="/messages">
+                <Route path="/messages/:id">
                   <Messages />
                 </Route>
               </AppBody>

@@ -41,19 +41,18 @@ const ChatInput = () => {
 export default ChatInput
 
 const ChatInputContainer = styled.div`
-
-  > form {
+  form {
     position: absolute;
     bottom: 0;
-    width: 70%;
+    width: 75%;
+    /* width: 1450px; */
     display: flex;
     justify-content: center;
     align-items: center;
-   background: #fff; 
-
+    background: #fff; 
   }
 
-  > form input {
+  form input {
     background: whitesmoke;
     width: 100%;
     border: 1px solid gray;
@@ -61,6 +60,7 @@ const ChatInputContainer = styled.div`
     padding: 10px 20px;
     outline: none;
     border: none;
+    margin-bottom: 10px;
   }
   
   form .MuiSvgIcon-root {

@@ -6,7 +6,7 @@ export const loginAsync = createAsyncThunk(
   'auth/loginAsync',
   async (payload) => {
     console.log(payload)
-    const data = await axios.userRequestDetails('users/me', {}, "GET", payload)
+    const data = await axios.requestWithoutKey('users/me', {}, "GET", payload)
     return data.data
   }
 )

@@ -1,8 +1,8 @@
 import axios from "axios"
 
-//  USER API
+//  WITH PRIVATE KEY
 
-export const userRequest = (url = "", data, method = "") => {
+export const requestWithKey = (url = "", data, method = "") => {
   const res = axios({
     url: `https://api.chatengine.io/${url}`,
     method,
@@ -19,9 +19,9 @@ export const userRequest = (url = "", data, method = "") => {
   return res
 }
 
-//  CHAT DETAILS API
+//  WITHOUT PRIVATE KEY
 
-export const userRequestDetails = (url = "", data = {}, method = "", secret = {}) => {
+export const requestWithoutKey = (url = "", data = {}, method = "", secret = {}) => {
   const res = axios({
     url: `https://api.chatengine.io/${url}`,
     method,

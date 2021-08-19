@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 export const userAsync = createAsyncThunk(
   'users/userAsync',
   async (payload) => {
-    const data = await axios.userRequest('users', payload, "GET")
+    const data = await axios.requestWithKey('users', payload, "GET")
     return data.data
   }
 )

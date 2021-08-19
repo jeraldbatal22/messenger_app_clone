@@ -4,16 +4,23 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 export const chatAsync = createAsyncThunk(
   'chat/chatAsync',
   async (payload) => {
-    const data = await axios.userRequestDetails('chats', {}, "GET", payload)
-    console.log(data)
+    const data = await axios.requestWithoutKey('chats', {}, "GET", payload)
+    return data.data
+  }
+)
+export const deleteChatAsync = createAsyncThunk(
+  'chat/deleteChatAsync',
+  async (payload) => {
+    const data = await axios.requestWithoutKey(`chats/${payload.chatId}/`, {}, "DELETE", payload.secret)
     return data.data
   }
 )
 
+
 export const chatMessagesAsync = createAsyncThunk(
   'chat/chatMessagesAsync',
   async (payload) => {
-    const data = await axios.userRequestDetails(`chats/${payload.id}/messages`, {}, "GET", payload.secret)
+    const data = await axios.requestWithoutKey(`chats/${payload.id}/messages`, {}, "GET", payload.secret)
     return data.data
   }
 )
@@ -21,7 +28,15 @@ export const chatMessagesAsync = createAsyncThunk(
 export const chatMessagesSendAsync = createAsyncThunk(
   'chat/chatMessagesSendAsync',
   async (payload) => {
-    const data = await axios.userRequestDetails(`chats/${payload.chatId}/messages/`, payload.sendMessage, "POST", payload.secret)
+    const data = await axios.requestWithoutKey(`chats/${payload.chatId}/messages/`, payload.sendMessage, "POST", payload.secret)
+    return data.data
+  }
+)
+
+export const deleteMessageAsync = createAsyncThunk(
+  'chat/deleteMessageAsync',
+  async (payload) => {
+    const data = await axios.requestWithoutKey(`chats/${payload.chatId}/messages/${payload.messageId}`, {}, "DELETE", payload.secret)
     return data.data
   }
 )
@@ -32,6 +47,7 @@ const ChatStore = createSlice({
     list: [],
     messages: [],
     chatId: null,
+    lastMessage: null,
   },
   reducers: {
     resetStateChat(state, action) {
@@ -50,10 +66,17 @@ const ChatStore = createSlice({
     resetMessages: (state, action) => {
       state.messages = []
     },
+    getAllMessages: (state, action) => {
+      state.messages = action.payload
+    },
+    getChats: (state, action) => {
+      state.list = action.payload
+    },
   },
   extraReducers: {
     [chatAsync.fulfilled]: (state, action) => {
       state.list = action.payload
+      state.chatId = action.payload[0].id
     },
     [chatMessagesAsync.fulfilled]: (state, action) => {
       state.messages = action.payload
@@ -64,6 +87,6 @@ const ChatStore = createSlice({
   }
 })
 
-export const { getUserDetails, enterChatRoom, resetStateChat, resetMessages } = ChatStore.actions
+export const { getUserDetails, enterChatRoom, resetStateChat, resetMessages, getAllMessages, getChats } = ChatStore.actions
 
 export default ChatStore.reducer

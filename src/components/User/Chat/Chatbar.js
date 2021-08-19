@@ -1,11 +1,20 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
+import { chatMessagesAsync } from "../../../features/ChatStore"
 import TopHeader from '../TopHeader'
 import Chat from "./Chat"
+import ChatInput from "./ChatInput"
+import ChatMessages from "./ChatMessages"
 
 const Chatbar = (props) => {
+  const dispatch = useDispatch()
   const { auth } = useSelector((store) => store)
-  const firstname = auth.user.first_name.toUpperCase()
+  const { chatId, messages } = useSelector(({ chat }) => chat)
+  if (messages === null) {
+    dispatch(chatMessagesAsync({ id: chatId, secret: auth.secret }))
+  }
+
+  // // const firstname = auth.user.first_name.toUpperCase()
   return (
     <ChatbarContainer>
       <TopHeader />
@@ -13,9 +22,10 @@ const Chatbar = (props) => {
         props.show ?
           <Chat />
           :
-          <ChatPage>
-            <h1>Welcome Back {firstname}</h1>
-          </ChatPage>
+          <ChatContainer >
+            <ChatMessages />
+            <ChatInput />
+          </ChatContainer>
       }
 
     </ChatbarContainer>
@@ -44,7 +54,11 @@ const ChatbarContainer = styled.div`
   } 
 `
 
-const ChatPage = styled.div`
-  display: flex;
-  justify-content: center;
+// const LastChat = styled.div`
+//   display: flex;
+//   justify-content: center;
+// `
+
+const ChatContainer = styled.div`
+  margin-bottom: 50px !important;
 `

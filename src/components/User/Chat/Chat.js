@@ -15,6 +15,6 @@ const Chat = () => {
 export default Chat
 
 const ChatContainer = styled.div`
-  margin-bottom: 100px !important;
+  margin-bottom: 50px !important;
 `
 

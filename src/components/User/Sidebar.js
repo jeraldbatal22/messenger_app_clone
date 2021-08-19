@@ -1,15 +1,18 @@
 import { Avatar } from "@material-ui/core"
-import { Create, MoreHoriz, Search, VideoCall } from "@material-ui/icons"
+import { Create, Delete, MoreHoriz, Search, VideoCall } from "@material-ui/icons"
 import { useDispatch, useSelector } from "react-redux"
+import { useHistory } from "react-router-dom"
 import styled from "styled-components"
-import { chatMessagesAsync, enterChatRoom, resetMessages } from "../../features/ChatStore"
+import { chatMessagesAsync, deleteChatAsync, enterChatRoom, getChats, resetMessages } from "../../features/ChatStore"
 
 const Sidebar = (props) => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { list } = useSelector(({ chat }) => chat)
   const { secret } = useSelector(({ auth }) => auth)
 
   const selectMessage = (id) => {
+    history.push(`/messages/${id}`)
     dispatch(chatMessagesAsync({ id, secret }))
     dispatch(enterChatRoom(id))
     dispatch(resetMessages())
@@ -44,10 +47,26 @@ const Sidebar = (props) => {
           list.map((chat, index) => {
             return <div className="messages_body" onClick={() => selectMessage(chat.id)} key={index}>
               <Avatar className="images" />
-              <div className="messages">
-                <h3>{chat.title}</h3>
-                <p>{chat.last_message.sender_username}: {chat.last_message.text}</p>
-              </div>
+              {
+                chat.last_message.sender_username !== "" ?
+                  <div className="messages">
+
+                    <h3>{chat.title}</h3>
+
+                    <p>{chat.last_message.sender_username}: {chat.last_message.text}</p>
+                  </div>
+
+                  :
+                  <div className="messages">
+
+                    <h3>{chat.title}</h3>
+
+
+                    <p>Empty Message...</p>
+
+                  </div>
+
+              }
             </div>
           })
         }
@@ -166,6 +185,15 @@ const MessagesContainer = styled.div`
   .messages_body {
     display: flex;
     cursor: pointer;
+  }
+
+  .deleteBtn {
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .deleteBtn:hover {
+    color: red;
   }
 
   p:first-letter {
